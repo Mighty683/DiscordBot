@@ -1,0 +1,31 @@
+{
+    "interval": 5000,
+    "discord": {
+        "token": "Place your Token here",
+        "server": {
+            "channel": "bot channel ID"
+        }
+    },
+    "channels": [
+        {
+            "url": "https://staty.portalradiowy.pl/statystyki/shoutcast_data.php",
+            "method": "POST",
+            "name": "Wakai",
+            "form": {
+                "ip": "s1.slotex.pl",
+                "port": 7196
+            },
+            "key": {
+                "location": "SERVERGENRE"
+            }
+        },
+        {
+            "url": "http://widget.radiohost.pl/widgets,customBox/index&custom=true&widget=player&radio=291&hash=5aefa&informationjson=true",
+            "method": "GET",
+            "name": "Anime 24",
+            "key": {
+                "location": "response.informationjson.getNowDataReal.now.djname"
+            }
+        }
+    ]
+}
