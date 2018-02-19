@@ -32,7 +32,7 @@ function checkChannels () {
 }
 
 function prepareMsg (channel, name) {
-    return 'Na antenie radia: ' + channel + ' \nGra dla was ' + name
+    return 'Na antenie radia ' + channel + ' \nGra dla was ' + name
 }
 
 function startRequests () {
@@ -60,22 +60,17 @@ function getValue (response, location) {
 }
 
 function startRequest (channel, callback) {
+    if (!channel.method) {
+        console.log('No request method for' + channel.name)
+        return
+    }
     var options = {
         url: channel.url,
-        method: '',
+        method: channel.method,
         json: true,
         form: channel.form
     }
-    switch (channel.method) {
-        case 'GET':
-        options.method = 'GET'
-        break
-        case 'POST':
-        options.method = 'POST'
-        break
-        default:
-        console.log('No request method for' + channel.name)
-    }
+
     request(options, function(err, res, body) {
         callback(err, {
             data: channel,
