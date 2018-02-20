@@ -12,27 +12,71 @@ client.on('ready', () => {
     start()
 });
 
-function start () {
-setInterval(startRequests, config.interval)
+client.on('message', (message) => {
+    config.channels.forEach(function (channel) {
+        if (checkMessage(message, channel)) {
+            var command = isCommand(message.content, channel.commands)
+            if (command) {
+                startRequest(channel, responseToCommand.bind(this, {
+                    message: message,
+                    channel: channel,
+                    command: command
+                }))
+            }
+        }
+    })
+})
+
+function responseToCommand(commandData, err, response) {
+    sendMessage(
+        commandData.message.channel,
+        commandData.channel.name,
+        commandData.command.prefix,
+        parseResponse(response.response, commandData.command)
+    )
 }
 
-function sendMessage (channel, key) {
-    var dicordChannel = client.channels.get(config.discord.server.channel)
-    dicordChannel.send(prepareMsg(channel.name, key))
+function checkMessage (message, channel) {
+    return message.channel.id === channel.discordChannel && isMessageCommand(message.content)
+}
+
+function isCommand (content, commands) {
+    return commands.find(function (command) {
+        return content === config.discord.commandPrefix + command.command
+    })
+}
+
+function isMessageCommand (content) {
+    return content.substring(0,2) === config.discord.commandPrefix
+}
+
+function start () {
+    setInterval(startRequests, config.interval)
+}
+
+function sendMessage (channel, channelName, prefix, key) {
+    channel.send(prepareMsg(channelName, prefix, key))
 }
 
 function checkChannels () {
     state.channels.forEach((channel) => {
-        var checkedKey = parseResponse(channel.response, channel.data.key)
+        var data = channel.data,
+            checkedKey = parseResponse(channel.response, data.key)
         if (channel.prevResponse !== checkedKey) {
             channel.prevResponse = checkedKey
-            sendMessage(channel.data, checkedKey)
+            var discordChannel = getDiscordChannel(data.discordChannel)
+            console.log(data)
+            sendMessage(discordChannel, data.name, data.key.prefix, checkedKey)
         }
     })
 }
 
-function prepareMsg (channel, name) {
-    return 'Na antenie radia ' + channel + ' \nGra dla was ' + name
+function getDiscordChannel (id) {
+    return client.channels.get(id)
+}
+
+function prepareMsg (channel, prefix, name) {
+    return 'Na antenie radia ' + channel + "\n" + prefix + name
 }
 
 function startRequests () {
