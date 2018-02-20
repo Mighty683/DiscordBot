@@ -65,7 +65,6 @@ function checkChannels () {
         if (channel.prevResponse !== checkedKey) {
             channel.prevResponse = checkedKey
             var discordChannel = getDiscordChannel(data.discordChannel)
-            console.log(data)
             sendMessage(discordChannel, data.name, data.key.prefix, checkedKey)
         }
     })
