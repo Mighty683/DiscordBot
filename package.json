@@ -4,6 +4,7 @@
   "description": "Fuminator bot",
   "main": "fuminator.js",
   "scripts": {
+    "start": "node fuminator.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Tomasz Szarek",
