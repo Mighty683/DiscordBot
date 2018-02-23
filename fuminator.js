@@ -63,9 +63,11 @@ function checkChannels () {
         var data = channel.data,
             checkedKey = parseResponse(channel.response, data.key)
         if (channel.prevResponse !== checkedKey) {
-            channel.prevResponse = checkedKey
             var discordChannel = getDiscordChannel(data.discordChannel)
-            sendMessage(discordChannel, data.name, data.key.prefix, checkedKey)
+            if (channel.prevResponse) {
+                sendMessage(discordChannel, data.name, data.key.prefix, checkedKey)
+            }
+            channel.prevResponse = checkedKey
         }
     })
 }
