@@ -123,15 +123,17 @@ function startRequest (channel, callback) {
 }
 
 function saveResponses (err, responses) {
-    for (let i = 0; i < responses.length; i++) {
-        if (state.channels[i] instanceof Object) {
-            state.channels[i] = Object.assign(
-                state.channels[i],
-                responses[i]
-            )
-        } else {
-            state.channels[i] = responses[i]
+    if (!err) {
+        for (let i = 0; i < responses.length; i++) {
+            if (state.channels[i] instanceof Object) {
+                state.channels[i] = Object.assign(
+                    state.channels[i],
+                    responses[i]
+                )
+            } else {
+                state.channels[i] = responses[i]
+            }
         }
+        checkChannels()
     }
-    checkChannels()
 }
