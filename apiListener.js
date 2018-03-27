@@ -11,7 +11,6 @@ function ApiListener(config) {
   this.startSubscribe = function (interval) {
     setInterval(function () {
       this.startRequest()
-      console.log('Request start')
     }.bind(this), interval)
   }
 
@@ -19,6 +18,9 @@ function ApiListener(config) {
     if (!err && response && this.parseResponse(response)) {
       this.state.response = this.parseResponse(response)
       this.emit('response:received', this.state.response)
+      console.log('Reponse saved')
+    } else {
+      console.log('Error occured')
     }
   }
 
@@ -62,7 +64,7 @@ function ApiListener(config) {
   this.getValue = function (response, location) {
     var locationArray = location.split('.')
     for (let i = 0; i < locationArray.length; i++) {
-        if (response[locationArray[i]]) {
+        if (response && response[locationArray[i]]) {
             response = response[locationArray[i]]
         } else {
             return undefined
