@@ -1,8 +1,8 @@
 const request = require('request')
-const async = require('async')
-const EventEmitter = require('events').EventEmitter;
-const util = require('util');
-function ApiListener(config) {
+const EventEmitter = require('events').EventEmitter
+const util = require('util')
+
+function ApiListener (config) {
   this.config = config
   this.state = {
     response: undefined
@@ -36,7 +36,7 @@ function ApiListener(config) {
     }
     request(options, function (err, res, body) {
       this.saveResponse(err, body)
-  }.bind(this))
+    }.bind(this))
   }
 
   this.getValueFromResponse = function (location) {
@@ -44,35 +44,34 @@ function ApiListener(config) {
   }
 
   this.parseResponse = function (response) {
-      try {
-          if (!(response instanceof Object)) {
-            response = JSON.parse(
-              response.substring(
-                response.indexOf('(') + 1,
-                response.lastIndexOf(')')
-              )
-            )
-          }
+    try {
+      if (!(response instanceof Object)) {
+        response = JSON.parse(
+          response.substring(
+            response.indexOf('(') + 1,
+            response.lastIndexOf(')')
+          )
+        )
       }
-      catch (err) {
-          console.log('Cannot parse response')
-          return undefined
-      }
+    } catch (err) {
+      console.log('Cannot parse response')
+      return undefined
+    }
     return response
   }
 
   this.getValue = function (response, location) {
     var locationArray = location.split('.')
     for (let i = 0; i < locationArray.length; i++) {
-        if (response && response[locationArray[i]]) {
-            response = response[locationArray[i]]
-        } else {
-            return undefined
-        }
+      if (response && response[locationArray[i]]) {
+        response = response[locationArray[i]]
+      } else {
+        return undefined
+      }
     }
     return response
   }
 }
 
-util.inherits(ApiListener, EventEmitter);
+util.inherits(ApiListener, EventEmitter)
 module.exports = ApiListener

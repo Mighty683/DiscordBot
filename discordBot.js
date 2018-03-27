@@ -1,9 +1,9 @@
 const Discord = require('discord.js')
 const client = new Discord.Client()
-const EventEmitter = require('events').EventEmitter;
-const util = require('util');
+const EventEmitter = require('events').EventEmitter
+const util = require('util')
 
-function DiscordBot(config) {
+function DiscordBot (config) {
   this.config = config
   this.discordInit = function () {
     client.login(this.config.token)
@@ -32,5 +32,5 @@ function DiscordBot(config) {
   }
 }
 
-util.inherits(DiscordBot, EventEmitter);
+util.inherits(DiscordBot, EventEmitter)
 module.exports = DiscordBot
