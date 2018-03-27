@@ -42,14 +42,20 @@ function ApiListener(config) {
   }
 
   this.parseResponse = function (response) {
-    if (!(response instanceof Object)) {
-      response = JSON.parse(
-        response.substring(
-          response.indexOf('(') + 1,
-          response.lastIndexOf(')')
-        )
-      )
-    }
+      try {
+          if (!(response instanceof Object)) {
+            response = JSON.parse(
+              response.substring(
+                response.indexOf('(') + 1,
+                response.lastIndexOf(')')
+              )
+            )
+          }
+      }
+      catch (err) {
+          console.log('Cannot parse response')
+          return undefined
+      }
     return response
   }
 
@@ -59,7 +65,7 @@ function ApiListener(config) {
         if (response[locationArray[i]]) {
             response = response[locationArray[i]]
         } else {
-            return response
+            return undefined
         }
     }
     return response

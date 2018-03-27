@@ -1,13 +1,13 @@
 {
     "interval": 5000,
     "discord": {
-        "token": "Place your Token here",
-        "server": {
-            "channel": "bot channel ID"
-        }
+        "commandPrefix": "Command Prefix Here",
+        "token": "Token Here",
+        "messagePrefix": "On Radio "
     },
     "channels": [
         {
+            "discordChannel": "Channel Here",
             "url": "https://staty.portalradiowy.pl/statystyki/shoutcast_data.php",
             "method": "POST",
             "name": "Wakai",
@@ -16,16 +16,21 @@
                 "port": 7196
             },
             "key": {
+                "prefix": "Play for you ",
                 "location": "SERVERGENRE"
-            }
-        },
-        {
-            "url": "http://widget.radiohost.pl/widgets,customBox/index&custom=true&widget=player&radio=291&hash=5aefa&informationjson=true",
-            "method": "GET",
-            "name": "Anime 24",
-            "key": {
-                "location": "response.informationjson.getNowDataReal.now.djname"
-            }
+            },
+            "commands": [
+                {
+                    "prefix": "Play for you ",
+                    "command": "who",
+                    "location": "SERVERGENRE"
+                },
+                {
+                    "prefix": "Song: ",
+                    "command": "song",
+                    "location": "SONGTITLE"
+                }
+            ]
         }
     ]
 }
