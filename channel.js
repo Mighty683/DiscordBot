@@ -62,7 +62,7 @@ function Fuminator (options) {
         return
       }
     }
-    this.emit('cmd:received', this.apiChannel, message)
+    this.emit(this.trimCommand(message.content) + ':cmd:received', this.apiChannel, message)
   }
 
   this.defaultCommandHandler = function (command, keyValue) {
