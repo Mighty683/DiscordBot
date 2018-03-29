@@ -25,24 +25,23 @@ function DiscordBot (config) {
   }
 
   this.getMsgEmbed = function (title, msgContent, file) {
-      let embed = new Discord.RichEmbed()
-        .setColor(0x00AE86)
-        .setFooter('Fuminator made by Migum')
-      if (file) {
-          embed.setTitle(msgContent)
-          embed.attachFile(file)
-          embed.setImage('attachment://' + file.name)
-      } else {
-          embed.setTitle(title)
-          embed.setDescription(msgContent)
-      }
-      return embed
+    let embed = new Discord.RichEmbed()
+      .setColor(0x00AE86)
+      .setFooter('Fuminator made by Migum')
+    if (file) {
+      embed.setTitle(msgContent)
+      embed.attachFile(file)
+      embed.setImage('attachment://' + file.name)
+    } else {
+      embed.setTitle(title)
+      embed.setDescription(msgContent)
+    }
+    return embed
   }
 
-
-    this.getMsgTitle = function (channelName) {
-      return this.config.messagePrefix + channelName
-    }
+  this.getMsgTitle = function (channelName) {
+    return this.config.messagePrefix + channelName
+  }
 }
 
 util.inherits(DiscordBot, EventEmitter)

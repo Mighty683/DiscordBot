@@ -70,14 +70,13 @@ function Fuminator (options) {
   }
 
   this.trimCommand = function (content) {
-      return content.substring(2)
+    return content.substring(2)
   }
 
   this.isCommand = function (content) {
     return content.substring(0, 2) === this.config.discord.commandPrefix
   }
   this.sendMessage = function (msgContent, file) {
-      console.log(msgContent)
     this.discordBot.sendMessage(this.apiChannel.discordChannel, this.apiChannel.name, msgContent, file)
   }
 }
