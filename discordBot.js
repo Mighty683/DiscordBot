@@ -20,9 +20,29 @@ function DiscordBot (config) {
     return this.client.channels.get(id)
   }
 
-  this.sendMessage = function (channelId, messageContent) {
-    this.getDiscordChannel(channelId).send(messageContent)
+  this.sendMessage = function (channelId, channelName, msgContent, file) {
+    this.getDiscordChannel(channelId).send(this.getMsgEmbed(this.getMsgTitle(channelName), msgContent, file))
   }
+
+  this.getMsgEmbed = function (title, msgContent, file) {
+      let embed = new Discord.RichEmbed()
+        .setColor(0x00AE86)
+        .setFooter('Fuminator made by Migum')
+      if (file) {
+          embed.setTitle(msgContent)
+          embed.attachFile(file)
+          embed.setImage('attachment://' + file.name)
+      } else {
+          embed.setTitle(title)
+          embed.setDescription(msgContent)
+      }
+      return embed
+  }
+
+
+    this.getMsgTitle = function (channelName) {
+      return this.config.messagePrefix + channelName
+    }
 }
 
 util.inherits(DiscordBot, EventEmitter)
