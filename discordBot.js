@@ -27,7 +27,7 @@ function DiscordBot (config) {
   this.getMsgEmbed = function (title, msgContent, file) {
     let embed = new Discord.RichEmbed()
       .setColor(0x00AE86)
-      .setFooter('Fuminator made by Migum')
+      .setFooter(this.config.footer)
     if (file) {
       embed.setTitle(msgContent)
       embed.attachFile(file)
