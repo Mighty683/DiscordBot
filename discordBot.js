@@ -12,7 +12,7 @@ function DiscordBot (config) {
       this.emit('bot:ready')
     })
     this.client.on('message', (message) => {
-      this.emit('message:received', message.channel.id, message)
+      this.emit('message:received', message)
     })
   }
 
@@ -20,27 +20,21 @@ function DiscordBot (config) {
     return this.client.channels.get(id)
   }
 
-  this.sendMessage = function (channelId, channelName, msgContent, file) {
-    this.getDiscordChannel(channelId).send(this.getMsgEmbed(this.getMsgTitle(channelName), msgContent, file))
+  this.sendMessage = function (channelId, msgContent) {
+    this.getDiscordChannel(channelId).send(this.getMsgEmbed(msgContent))
   }
 
-  this.getMsgEmbed = function (title, msgContent, file) {
+  this.getMsgEmbed = function (msgContent) {
     let embed = new Discord.RichEmbed()
       .setColor(0x00AE86)
       .setFooter(this.config.footer)
-    if (file) {
-      embed.setTitle(msgContent)
-      embed.attachFile(file)
-      embed.setImage('attachment://' + file.name)
-    } else {
-      embed.setTitle(title)
-      embed.setDescription(msgContent)
+    msgContent.title && embed.setTitle(msgContent.title)
+    msgContent.desc && embed.setDescription(msgContent.desc)
+    if (msgContent.file) {
+      embed.attachFile(msgContent.file)
+      embed.setImage('attachment://' + msgContent.file.name)
     }
     return embed
-  }
-
-  this.getMsgTitle = function (channelName) {
-    return this.config.messagePrefix + channelName
   }
 }
 

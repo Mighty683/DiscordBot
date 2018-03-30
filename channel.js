@@ -37,15 +37,20 @@ function Fuminator (options) {
   }
 
   this.keyValueChangeHandler = function (keyValue) {
-    this.sendMessage(this.apiChannel.key.prefix + ' ' + keyValue)
+    this.sendMessage({
+      title: this.getMsgTitle(),
+      desc: this.apiChannel.key.prefix + ' ' + keyValue
+    })
   }
 
   this.registerCommandListener = function () {
-    this.discordBot.on('message:received', (channelId, message) => {
-      if (this.apiChannel.discordChannel === channelId) {
+    this.discordBot.on('message:received', (message) => {
+      if (this.apiChannel.discordChannel === message.channel.id) {
         let checkedCommand = this.isCommand(message.content)
         if (checkedCommand) {
           this.processCommand(message)
+        } else {
+          this.emit('message:received', message)
         }
       }
     })
@@ -66,7 +71,10 @@ function Fuminator (options) {
   }
 
   this.defaultCommandHandler = function (command, keyValue) {
-    this.sendMessage(command.prefix + keyValue)
+    this.sendMessage({
+      title: this.getMsgTitle(),
+      desc: command.prefix + keyValue
+    })
   }
 
   this.trimCommand = function (content) {
@@ -76,8 +84,17 @@ function Fuminator (options) {
   this.isCommand = function (content) {
     return content.substring(0, 2) === this.config.discord.commandPrefix
   }
+
   this.sendMessage = function (msgContent, file) {
-    this.discordBot.sendMessage(this.apiChannel.discordChannel, this.apiChannel.name, msgContent, file)
+    this.discordBot.sendMessage(this.apiChannel.discordChannel, msgContent, file)
+  }
+
+  this.isUserBot = function (user) {
+    return user.id === this.discordBot.client.user.id
+  }
+
+  this.getMsgTitle = function () {
+    return this.config.discord.messagePrefix + this.apiChannel.name
   }
 }
 

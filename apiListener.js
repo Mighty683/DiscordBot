@@ -18,9 +18,9 @@ function ApiListener (config) {
     if (!err && response && this.parseResponse(response)) {
       this.state.response = this.parseResponse(response)
       this.emit('response:received', this.state.response)
-      console.log('Reponse saved')
+      console.log('API response received')
     } else {
-      console.log('Error occured')
+      console.warn('API connection error')
     }
   }
 
@@ -54,7 +54,7 @@ function ApiListener (config) {
         )
       }
     } catch (err) {
-      console.log('Cannot parse response')
+      console.warn('Bad response')
       return undefined
     }
     return response
