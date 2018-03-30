@@ -21,7 +21,12 @@ function DiscordBot (config) {
   }
 
   this.sendMessage = function (channelId, msgContent) {
-    this.getDiscordChannel(channelId).send(this.getMsgEmbed(msgContent))
+    this.getDiscordChannel(channelId).send(this.getMsgContent(msgContent))
+  }
+
+  this.getMsgContent = function (msgContent) {
+    console.log(typeof msgContent)
+    return typeof msgContent === 'string' ? msgContent : this.getMsgEmbed(msgContent)
   }
 
   this.getMsgEmbed = function (msgContent) {
