@@ -25,7 +25,6 @@ function DiscordBot (config) {
   }
 
   this.getMsgContent = function (msgContent) {
-    console.log(typeof msgContent)
     return typeof msgContent === 'string' ? msgContent : this.getMsgEmbed(msgContent)
   }
 

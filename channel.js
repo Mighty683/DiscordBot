@@ -78,7 +78,7 @@ function Fuminator (options) {
   }
 
   this.trimCommand = function (content) {
-    return content.substring(2)
+    return content.split(' ')[0].substring(2)
   }
 
   this.isCommand = function (content) {
