@@ -1,5 +1,10 @@
 const Channel = require('./channel.js')
 const config = require('./config.json')
+const DBConstroller = require('./dbController.js')
+
+
+var dbController = new DBConstroller(config.db)
+dbController.init()
 
 function WakaiListenerInit (channel) {
   channel.on('message:received', (msg) => {
