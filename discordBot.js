@@ -22,7 +22,12 @@ function DiscordBot (config, token) {
   }
 
   this.sendMessage = function (channelId, msgContent) {
-    this.getDiscordChannel(channelId).send(this.getMsgContent(msgContent))
+    let channel = this.getDiscordChannel(channelId)
+    if (channel) {
+      this.getDiscordChannel(channelId).send(this.getMsgContent(msgContent))
+    } else {
+      console.log('Wrong Channel')
+    }
   }
 
   this.getMsgContent = function (msgContent) {
