@@ -2,12 +2,11 @@ const Discord = require('discord.js')
 const EventEmitter = require('events').EventEmitter
 const util = require('util')
 
-function DiscordBot (config, token) {
+function DiscordBot (config) {
   this.config = config
-  this.token = token
   this.client = new Discord.Client()
   this.discordInit = function () {
-    this.client.login(this.token)
+    this.client.login(this.config.token)
     this.client.on('ready', () => {
       console.log('Discordbot is ready')
       this.emit('bot:ready')
@@ -21,10 +20,10 @@ function DiscordBot (config, token) {
     return this.client.channels.get(id)
   }
 
-  this.sendMessage = function (channelId, msgContent) {
-    let channel = this.getDiscordChannel(channelId)
+  this.sendMessage = function (msgContent) {
+    let channel = msgContent.channelId ? this.getDiscordChannel(msgContent.channelId) : this.getDiscordChannel(this.config.discordChannel)
     if (channel) {
-      this.getDiscordChannel(channelId).send(this.getMsgContent(msgContent))
+      channel.send(this.getMsgContent(msgContent))
     } else {
       console.log('Wrong Channel')
     }
@@ -35,16 +34,20 @@ function DiscordBot (config, token) {
   }
 
   this.getMsgEmbed = function (msgContent) {
-    let embed = new Discord.RichEmbed()
-      .setColor(0x00AE86)
-      .setFooter(this.config.footer)
-    msgContent.title && embed.setTitle(msgContent.title)
-    msgContent.desc && embed.setDescription(msgContent.desc)
-    if (msgContent.file) {
-      embed.attachFile(msgContent.file)
-      embed.setImage('attachment://' + msgContent.file.name)
+    if (msgContent.string) {
+      return msgContent.string
+    } else {
+      let embed = new Discord.RichEmbed()
+        .setColor(0x00AE86)
+        .setFooter(this.config.footer)
+      msgContent.title && embed.setTitle(msgContent.title)
+      msgContent.desc && embed.setDescription(msgContent.desc)
+      if (msgContent.file) {
+        embed.attachFile(msgContent.file)
+        embed.setImage('attachment://' + msgContent.file.name)
+      }
+      return embed
     }
-    return embed
   }
 }
 

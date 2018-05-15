@@ -9,17 +9,12 @@ function Fuminator (options) {
 
   this.start = function () {
     this.apiListener = new ApiListener(this.apiChannel)
-    this.discordBot = this.initDiscordBot()
+    this.discordBot = new DiscordBot(this.apiChannel.discord)
     this.discordBot.discordInit()
     this.discordBot.on('bot:ready', () => {
       console.log('Channel listener is starting')
       this.registerApiChannel()
     })
-  }
-
-  this.initDiscordBot = function () {
-    let token = this.apiChannel.channelToken || this.config.token
-    return new DiscordBot(this.config.discord, token)
   }
 
   this.registerApiChannel = function () {
@@ -50,7 +45,7 @@ function Fuminator (options) {
 
   this.registerCommandListener = function () {
     this.discordBot.on('message:received', (message) => {
-      if (this.apiChannel.discordChannel === message.channel.id) {
+      if (this.apiChannel.discord.discordChannel === message.channel.id || this.apiChannel.discord.discordServer === message.guild.id) {
         let checkedCommand = this.isCommand(message.content)
         if (checkedCommand) {
           this.processCommand(message)
@@ -68,17 +63,19 @@ function Fuminator (options) {
       let command = commands[i]
       if (this.trimCommand(message.content) === command.command) {
         this.defaultCommandHandler(command,
-          this.apiListener.getValueFromResponse(command.location))
+          this.apiListener.getValueFromResponse(command.location),
+          message)
         return
       }
     }
     this.emit(this.trimCommand(message.content) + ':cmd:received', message)
   }
 
-  this.defaultCommandHandler = function (command, keyValue) {
+  this.defaultCommandHandler = function (command, keyValue, message) {
     this.sendMessage({
       title: this.getMsgTitle(),
-      desc: command.prefix + keyValue
+      desc: command.prefix + keyValue,
+      channelId: message.channel.id
     })
   }
 
@@ -87,11 +84,11 @@ function Fuminator (options) {
   }
 
   this.isCommand = function (content) {
-    return content.substring(0, 2) === this.config.discord.commandPrefix
+    return content.substring(0, 2) === this.apiChannel.discord.commandPrefix
   }
 
   this.sendMessage = function (msgContent, file) {
-    this.discordBot.sendMessage(this.apiChannel.discordChannel, msgContent, file)
+    this.discordBot.sendMessage(msgContent, file)
   }
 
   this.isUserBot = function (user) {
@@ -99,7 +96,7 @@ function Fuminator (options) {
   }
 
   this.getMsgTitle = function () {
-    return this.config.discord.messagePrefix + this.apiChannel.name
+    return this.apiChannel.discord.messagePrefix + this.apiChannel.name
   }
 }
 
