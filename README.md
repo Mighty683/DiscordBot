@@ -1,6 +1,6 @@
 # DiscordBot
 ## About
-Simple configurable bot which watch for informations from multiple API and send them to discord channels. Subscribe one API to one discordChannel
+Simple configurable bot which watch for informations from multiple API and send them to discord channels. Subscribe one API to one discord channel
 ### DiscordBot.js
 Send messages and recognize commands.
 ### ApiListener.js

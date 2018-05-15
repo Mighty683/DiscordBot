@@ -16,12 +16,12 @@ function DiscordBot (config) {
     })
   }
 
-  this.getDiscordChannel = function (id) {
+  this.getmainChannel = function (id) {
     return this.client.channels.get(id)
   }
 
   this.sendMessage = function (msgContent) {
-    let channel = msgContent.channelId ? this.getDiscordChannel(msgContent.channelId) : this.getDiscordChannel(this.config.discordChannel)
+    let channel = msgContent.channelId ? this.getmainChannel(msgContent.channelId) : this.getmainChannel(this.config.commandChannel)
     if (channel) {
       channel.send(this.getMsgContent(msgContent))
     } else {

@@ -38,6 +38,7 @@ function Fuminator (options) {
 
   this.keyValueChangeHandler = function (keyValue) {
     this.sendMessage({
+      channelId: this.apiChannel.discord.mainChannel,
       title: this.getMsgTitle(),
       desc: this.apiChannel.key.prefix + ' ' + keyValue
     })
@@ -45,7 +46,8 @@ function Fuminator (options) {
 
   this.registerCommandListener = function () {
     this.discordBot.on('message:received', (message) => {
-      if (this.apiChannel.discord.discordChannel === message.channel.id || this.apiChannel.discord.discordServer === message.guild.id) {
+      if ((this.apiChannel.discord.commandChannel && this.apiChannel.discord.commandChannel === message.channel.id) ||
+        (!this.apiChannel.discord.commandChannel && this.apiChannel.discord.discordServer === message.guild.id)) {
         let checkedCommand = this.isCommand(message.content)
         if (checkedCommand) {
           this.processCommand(message)
