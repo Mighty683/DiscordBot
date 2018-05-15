@@ -2,11 +2,12 @@ const Discord = require('discord.js')
 const EventEmitter = require('events').EventEmitter
 const util = require('util')
 
-function DiscordBot (config) {
+function DiscordBot (config, token) {
   this.config = config
+  this.token = token
   this.client = new Discord.Client()
   this.discordInit = function () {
-    this.client.login(this.config.token)
+    this.client.login(this.token)
     this.client.on('ready', () => {
       console.log('Discordbot is ready')
       this.emit('bot:ready')

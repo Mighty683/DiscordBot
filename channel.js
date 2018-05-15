@@ -9,12 +9,17 @@ function Fuminator (options) {
 
   this.start = function () {
     this.apiListener = new ApiListener(this.apiChannel)
-    this.discordBot = new DiscordBot(this.config.discord)
+    this.discordBot = this.initDiscordBot()
     this.discordBot.discordInit()
     this.discordBot.on('bot:ready', () => {
       console.log('Channel listener is starting')
       this.registerApiChannel()
     })
+  }
+
+  this.initDiscordBot = function () {
+    let token = this.apiChannel.channelToken || this.config.token
+    return new DiscordBot(this.config.discord, token)
   }
 
   this.registerApiChannel = function () {
