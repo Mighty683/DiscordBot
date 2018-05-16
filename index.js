@@ -74,7 +74,7 @@ function start () {
         dbController.checkAndCreateDoc(collection, channel, { name: channel.name }, channel.name)
       })
     })
-  } else {
+  } else{
     config.channels.forEach(channelInit)
   }
 }
