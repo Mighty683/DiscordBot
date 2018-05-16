@@ -69,16 +69,16 @@ function start () {
   let dbController = initDB()
   dbController.on('collection:set', (collection) => {
     config.channels.forEach((channel) => {
-      collection.find(channel).next((err, doc) => {
+      collection.find({name: channel.name}).next((err, doc) => {
         if (!err) {
           if (doc) {
             console.log(`DB:${channel.name}:doc:exists`)
-            channelInit(doc, collection.find(channel))
+            channelInit(doc, collection.find({name: channel.name}))
           } else {
             console.log(`DB:${channel.name}:doc:created`)
             collection.insertOne(channel, (err, doc) => {
               if (!err) {
-                channelInit(doc.ops[0], collection.find(channel))
+                channelInit(doc.ops[0], collection.find({name: channel.name}))
               }
             })
           }
