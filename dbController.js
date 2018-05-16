@@ -4,34 +4,37 @@ const EventEmitter = require('events').EventEmitter
 
 function DBController (options) {
   this.config = options
-
-  this.init = function () {
-    this.on('db:connected', function (client) {
-      this.createCollection(client.db('fuminator'))
-    }.bind(this))
-    this.connectDB()
-  }
-
   this.connectDB = function () {
-    MongoClient.connect(this.config.url, function (err, client) {
+    MongoClient.connect(this.config.url, (err, client) => {
       if (!err) {
         this.emit('db:connected', client)
-        console.log('DB connection: ' + this.config.url)
+        console.log(`DB connection: ${this.config.url}`)
       } else {
         console.log(err)
       }
-    }.bind(this))
+    })
   }
-  this.createCollection = function (db) {
-    db.listCollections().toArray(function (err, list) {
+
+  this.findDoc = function (collection, doc) {
+    return this.find(doc)
+  }
+
+  this.createDoc = function (collection, doc) {
+
+  }
+
+  this.createCollection = function (db, name) {
+    db.collection(name, (err, collection) => {
       if (!err) {
-        if (!list.map((el) => { return el.name }).includes('channels')) {
-          db.createCollection('channels', function (err, res) {
+        if (!collection) {
+          db.createCollection(name, (err, res) => {
             if (!err) {
+              this.emit('collection:set', res)
               console.log('Collection channels created!')
             }
           })
         } else {
+          this.emit('collection:set', collection)
           console.log('Collection already exists!')
         }
       } else {
@@ -39,6 +42,7 @@ function DBController (options) {
       }
     })
   }
+
   this.close = function () {
     this.client.close()
   }

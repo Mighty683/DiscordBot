@@ -2,9 +2,14 @@ const Channel = require('./channel.js')
 const config = require('./config.json')
 const DBConstroller = require('./dbController.js')
 
-
-var dbController = new DBConstroller(config.db)
-dbController.init()
+function initDB () {
+  let dbController = new DBConstroller(config.db)
+  dbController.on('db:connected', (client) => {
+    dbController.createCollection(client.db('fuminator'), config.db.channelsCollection)
+  })
+  dbController.connectDB()
+  return dbController
+}
 
 function WakaiListenerInit (channel) {
   channel.on('message:received', (msg) => {
@@ -32,27 +37,53 @@ function WakaiListenerInit (channel) {
   })
 }
 
-config.channels.forEach((apiChannel) => {
-  var channel = new Channel({
-    config: config,
-    apiChannel: apiChannel
-  })
-
-  channel.on('hug:cmd:received', (msg) => {
-    let userToHug = msg.mentions.users.first() || msg.author
-    channel.sendMessage({channelId: msg.channel.id, string: 'Fuminator hug ' + userToHug + '!'})
-  })
-
-
-
-  if (channel.name === 'Wakai') {
-    WakaiListenerInit(channel)
-  }
+function A24ListenerInit (channel) {
   channel.on('help:cmd:received', (msg) => {
       channel.sendMessage({
           desc: 'f!hug - hugs!\nf!who - current radio dj\nf!song - current song title\nf!listeners - current number of listeners',
           channelId: msg.channel.id
       })
   })
-  channel.start()
-})
+}
+
+function channelInit (apiChannel) {
+    var channel = new Channel({
+      config: config,
+      apiChannel: apiChannel
+    })
+
+    channel.on('hug:cmd:received', (msg) => {
+      let userToHug = msg.mentions.users.first() || msg.author
+      channel.sendMessage({channelId: msg.channel.id, string: 'Fuminator hug ' + userToHug + '!'})
+    })
+
+    if (channel.name === 'Wakai') {
+      WakaiListenerInit(channel)
+    } else {
+      A24ListenerInit(channel)
+    }
+    channel.start()
+}
+
+function start () {
+  let dbController = initDB()
+  dbController.on('collection:set', (collection) => {
+    config.channels.forEach((channel) => {
+      collection.find(channel).next((err, doc) => {
+        if (doc) {
+          console.log(`DB:${channel.name}:doc:exists`)
+          channelInit(channel)
+        } else {
+          console.log(`DB:${channel.name}:doc:created`)
+          collection.insertOne(channel, (err, doc) => {
+            if(!err) {
+              channelInit(channel)
+            }
+          })
+        }
+      })
+    })
+  })
+}
+
+start ()

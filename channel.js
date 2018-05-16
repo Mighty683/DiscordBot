@@ -18,9 +18,9 @@ function Fuminator (options) {
   }
 
   this.registerApiChannel = function () {
-    console.log('Registering ' + this.apiChannel.name + ' api channel')
+    console.log(`Registering ${this.apiChannel.name} channel`)
     this.registerApiChannelListener()
-    this.apiListener.startSubscribe(this.config.interval)
+    this.apiListener.startSubscribe()
     this.registerCommandListener()
   }
 
@@ -40,7 +40,7 @@ function Fuminator (options) {
     this.sendMessage({
       channelId: this.apiChannel.discord.mainChannel,
       title: this.getMsgTitle(),
-      desc: this.apiChannel.key.prefix + ' ' + keyValue
+      desc: `${this.apiChannel.key.prefix} ${keyValue}`
     })
   }
 
@@ -70,7 +70,7 @@ function Fuminator (options) {
         return
       }
     }
-    this.emit(this.trimCommand(message.content) + ':cmd:received', message)
+    this.emit(`${this.trimCommand(message.content)}:cmd:received`, message)
   }
 
   this.defaultCommandHandler = function (command, keyValue, message) {
