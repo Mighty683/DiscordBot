@@ -5,7 +5,11 @@ const EventEmitter = require('events').EventEmitter
 function DBController (options) {
   this.config = options
   this.connectDB = function () {
-    MongoClient.connect(this.config.url, (err, client) => {
+    MongoClient.connect(this.config.url, {
+      auth: {
+        user: this.config.user,
+        password: this.config.password
+      }}, (err, client) => {
       if (!err) {
         this.emit('db:connected', client)
         console.log(`DB connection: ${this.config.url}`)
