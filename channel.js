@@ -14,6 +14,9 @@ function Fuminator (options) {
     this.discordBot.on('bot:ready', () => {
       console.log('Channel listener is starting')
       this.registerApiChannel()
+      if (this.dbDocConnection) {
+        this.registerDBWorker()
+      }
     })
   }
 

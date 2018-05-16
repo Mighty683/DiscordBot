@@ -43,11 +43,21 @@ config.channels.forEach((apiChannel) => {
   if (channel.name === 'Wakai') {
     WakaiListenerInit(channel)
   }
-  channel.on('help:cmd:received', (msg) => {
-      channel.sendMessage({
-          desc: 'f!hug - hugs!\nf!who - current radio dj\nf!song - current song title\nf!listeners - current number of listeners',
-          channelId: msg.channel.id
-      })
-  })
   channel.start()
-})
+}
+
+function start () {
+  if (config.db) {
+    let dbController = initDB()
+    dbController.on('collection:set', (collection) => {
+      config.channels.forEach((channel) => {
+        dbController.on(`DB:${channel.name}:doc:created`, channelInit)
+        dbController.checkAndCreateDoc(collection, channel, { name: channel.name }, channel.name)
+      })
+    })
+  } else {
+    config.channels.forEach(channelInit)
+  }
+}
+
+start()
