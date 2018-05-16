@@ -15,12 +15,24 @@ function DBController (options) {
     })
   }
 
-  this.findDoc = function (collection, doc) {
-    return this.find(doc)
-  }
-
-  this.createDoc = function (collection, doc) {
-
+  this.checkAndCreateDoc = function (collection, data, query, name) {
+    collection.find(query).next((err, doc) => {
+      if (!err) {
+        if (doc) {
+          console.log(`DB:${name}:doc:exists`)
+          this.emit(`DB:${name}:doc:created`, doc, collection.find(query))
+        } else {
+          console.log(`DB:${name}:doc:created`)
+          collection.insertOne(data, (err, doc) => {
+            if (!err) {
+              this.emit(`DB:${name}:doc:created`, doc.ops[0], collection.find(query))
+            }
+          })
+        }
+      } else {
+        console.log('Doc access error!')
+      }
+    })
   }
 
   this.createCollection = function (db, name) {
