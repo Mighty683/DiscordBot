@@ -8,10 +8,10 @@ function ApiListener (config) {
     response: undefined
   }
 
-  this.startSubscribe = function (interval) {
+  this.startSubscribe = function () {
     setInterval(function () {
       this.startRequest()
-    }.bind(this), interval)
+    }.bind(this), this.config.interval)
   }
 
   this.saveResponse = function (err, response) {

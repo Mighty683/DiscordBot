@@ -4,8 +4,8 @@ const DiscordBot = require('./discordBot.js')
 const EventEmitter = require('events').EventEmitter
 
 function Fuminator (options) {
-  this.config = options.config
   this.apiChannel = options.apiChannel
+  this.dbDocConnection = options.dbDocConnection
 
   this.start = function () {
     this.apiListener = new ApiListener(this.apiChannel)
@@ -14,13 +14,24 @@ function Fuminator (options) {
     this.discordBot.on('bot:ready', () => {
       console.log('Channel listener is starting')
       this.registerApiChannel()
+      this.registerDBWorker()
     })
   }
 
+  this.registerDBWorker = function () {
+    setInterval(() => {
+      this.dbDocConnection.toArray((err, docs) => {
+        if (!err) {
+          this.apiChannel = docs[0]
+        }
+      })
+    }, this.apiChannel.interval)
+  }
+
   this.registerApiChannel = function () {
-    console.log('Registering ' + this.apiChannel.name + ' api channel')
+    console.log(`Registering ${this.apiChannel.name} channel`)
     this.registerApiChannelListener()
-    this.apiListener.startSubscribe(this.config.interval)
+    this.apiListener.startSubscribe()
     this.registerCommandListener()
   }
 
@@ -40,7 +51,7 @@ function Fuminator (options) {
     this.sendMessage({
       channelId: this.apiChannel.discord.mainChannel,
       title: this.getMsgTitle(),
-      desc: this.apiChannel.key.prefix + ' ' + keyValue
+      desc: `${this.apiChannel.key.prefix} ${keyValue}`
     })
   }
 
@@ -70,7 +81,7 @@ function Fuminator (options) {
         return
       }
     }
-    this.emit(this.trimCommand(message.content) + ':cmd:received', message)
+    this.emit(`${this.trimCommand(message.content)}:cmd:received`, message)
   }
 
   this.defaultCommandHandler = function (command, keyValue, message) {

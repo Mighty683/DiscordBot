@@ -44,7 +44,7 @@ function DiscordBot (config) {
       msgContent.desc && embed.setDescription(msgContent.desc)
       if (msgContent.file) {
         embed.attachFile(msgContent.file)
-        embed.setImage('attachment://' + msgContent.file.name)
+        embed.setImage(`attachment://${msgContent.file.name}`)
       }
       return embed
     }
