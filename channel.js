@@ -65,6 +65,7 @@ function Fuminator (options) {
         if (checkedCommand) {
           this.processCommand(message)
         } else {
+          console.log('message:received')
           this.emit('message:received', message)
         }
       }
@@ -83,6 +84,7 @@ function Fuminator (options) {
         return
       }
     }
+    console.log(`${this.trimCommand(message.content)}:cmd:received`)
     this.emit(`${this.trimCommand(message.content)}:cmd:received`, message)
   }
 
