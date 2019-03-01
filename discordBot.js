@@ -23,7 +23,7 @@ function DiscordBot (config) {
   this.sendMessage = function (msgContent) {
     let channel = msgContent.channelId ? this.getmainChannel(msgContent.channelId) : this.getmainChannel(this.config.commandChannel)
     if (channel) {
-      channel.send(this.getMsgContent(msgContent))
+      channel.send(this.getMsgContent(msgContent)).then(console.log).catch(console.error)
     } else {
       console.log('Wrong Channel')
     }
